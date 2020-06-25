@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container-fluid">
-    <form method="POST" action="{{url_for('index')}}">
+    <form method="POST" action="{{url_for('delete',task_id=task_id)}}">
         {{form.hidden_tag()}}
         <div class="row">
-            <h3>Add Task</h3>
-            <!--{{form.title.label}}-->
+            <h3>Are you sure ?</h3>
             <div class="col">
-                {{form.title(class="form-control")}}
+                {{title}}
             </div>
             <div class="col">
-                {{form.submit(class="btn btn-primary")}}
+                {{form.submit(class="btn btn-danger")}}
+                <a href="{{url_for('index')}}" class="btn btn-primary"></a>
             </div>
         </div>
     </form>
@@ -18,4 +18,5 @@
     <p>{{title}}</p>
     {% endif%}
 </div>
+
 {% endblock %}

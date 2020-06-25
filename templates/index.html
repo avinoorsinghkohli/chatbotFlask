@@ -2,8 +2,9 @@
 {% block content %}
     <ul>
     {% for task in tasks %}
-    <li>{{task.title }} created on {{task.date}}</li>    
-    
-    {% endfor%}
+        <li>{{task.title }} created on {{task.date}}</li>    
+        <a href="{{url_for('edit' , task_id=task.id)}}"> edit</a>
+        <a href="{{url_for('delete', task_id=task.id)}}">Delete</a>
+    {% endfor %}
     </ul>
 {% endblock  %}

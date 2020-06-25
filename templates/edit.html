@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container-fluid">
-    <form method="POST" action="{{url_for('index')}}">
+    <form method="POST" action="{{url_for('edit',task_id=task_id)}}">
         {{form.hidden_tag()}}
         <div class="row">
-            <h3>Add Task</h3>
+            <h3>Edit Task</h3>
             <!--{{form.title.label}}-->
             <div class="col">
                 {{form.title(class="form-control")}}
@@ -18,4 +18,5 @@
     <p>{{title}}</p>
     {% endif%}
 </div>
+
 {% endblock %}
