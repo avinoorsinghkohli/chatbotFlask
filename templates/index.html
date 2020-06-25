@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Helo bitch</h1>
-    <hr>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+    <ul>
+    {% for task in tasks %}
+    <li>{{task.title }} created on {{task.date}}</li>    
+    
+    {% endfor%}
+    </ul>
+{% endblock  %}

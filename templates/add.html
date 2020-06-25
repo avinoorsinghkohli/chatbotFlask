@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form method="POST" action="{{url_for('index')}}">
+        {{form.csrf_token()}}
+        {{form.title.label}}
+        {{form.title}}
+        {{form.submit}}
+    </form>
+    {% if title %}
+    <p>{{title}}</p>
+    {% endif%}
+{% endblock %}
