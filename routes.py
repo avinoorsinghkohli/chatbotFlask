@@ -1,53 +1,45 @@
-from app import app,db
-from flask import Flask, render_template, url_for, redirect, flash, get_flashed_messages
-import forms
-from models import Task
-from datetime import datetime
+from app import app
+from flask import Flask, render_template, url_for, redirect, flash, get_flashed_messages, request
+import requests
+import sys
+output=[]
+@app.route('/result', methods=['GET', 'POST'])
+def result():
+    if request.method=='POST':
+        result=list(request.form.values())[0]
+        if result.lower() =="restart":
+            output.clear()
+        else:
+            try:
+                print(result)
+                r=requests.post("http://localhost:5002/webhooks/rest/webhook",json={"message":str(result)})
+                print(r)
+                bot_message=""
+
+                print(r.json())
+                for i in r.json():
+                    
+                    if "text" in i.keys():
+
+                        bot_message=bot_message+i['text']
+                        #print(f"{i['text']}")
+
+                    if "image" in i.keys():
+                        bot_message=bot_message+i['image']
+                        #print(f"{i['image']}")
+                    
+                output.extend([("message avi", result), ("message bot", bot_message)])
+                
+                
+            except:
+                print("Invalid Output\n")
+                print(sys.exc_info()[0])
+                output.extend([("message avi", result), ("message bot", "Error")])
+        print(output)
+        return render_template("home.html", result=output)
+    return render_template("home.html", result=output)
+
 @app.route('/')
-@app.route('/index')
-def index():
-    tasks=Task.query.all()
-    return render_template('index.html',tasks=tasks)
-@app.route('/add', methods=['GET','POST'])
-def add():
-    form=forms.AddTaskForm()
-    if form.validate_on_submit():
-        #print(form.title.data)
-        t=Task(title=form.title.data, date=datetime.utcnow())
-        db.session.add(t)
-        db.session.commit()
-        flash("object created")
-        return redirect(url_for('index'))
-    return render_template('add.html',form=form)
-@app.route('/edit/<int:task_id>/', methods=['GET','POST'])
-def edit(task_id):
-    task=Task.query.get(task_id)
-    #print(task)
-    form=forms.AddTaskForm()
-    if task:
-        if form.validate_on_submit():
-            task.title=form.title.data
-            task.date=datetime.utcnow()
-            db.session.commit()
-            flash('Task updated')
-            return redirect(url_for('index'))
-        form.title.data=task.title
-        return render_template('edit.html', form=form, task_id=task_id)
-    else:
-        flash("Task not found")
-    return redirect(url_for('index'))
-@app.route('/delete/<int:task_id>/',methods=['GET','POST'])
-def delete(task_id):
-    task=Task.query.get(task_id)
-    form=forms.DeleteTaskForm()
-    if task:
-        if form.validate_on_submit():
-            db.session.delete(task)
-            db.session.commit()
-            flash('Task Deleted')
-            return redirect(url_for('index'))
-        
-        return render_template('delete.html', form=form, task_id=task_id, title=task.title)
-    else:
-        flash('Tasl not found')
-    return redirect(url_for('index'))
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    return render_template('home.html', result=output)
